@@ -1,13 +1,16 @@
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalTime;
+import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
-
+@ExtendWith(MockitoExtension.class)
 class RestaurantTest {
     Restaurant restaurant;
 
@@ -16,23 +19,47 @@ class RestaurantTest {
     //>>>>>>>>>>>>>>>>>>>>>>>>>OPEN/CLOSED<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
     //-------FOR THE 2 TESTS BELOW, YOU MAY USE THE CONCEPT OF MOCKING, IF YOU RUN INTO ANY TROUBLE
     @Test
-    public void is_restaurant_open_should_return_true_if_time_is_between_opening_and_closing_time(){
+    public void is_restaurant_open_should_return_true_if_time_is_between_opening_and_closing_time() {
         //WRITE UNIT TEST CASE HERE
 
-        //arrange:
-        LocalTime openingTime = LocalTime.now().minusHours(2);
-        LocalTime closingTime = LocalTime.now().plusHours(2);
-        restaurant = new Restaurant("some_name","some_location",openingTime,closingTime);
-
+        //ARRANGE PATH 1: all times in same day.
+        LocalTime openingTime = LocalTime.parse("10:00:00");
+        LocalTime closingTime = LocalTime.parse("20:00:00");
+        restaurant = new Restaurant("some_name", "some_location", openingTime, closingTime);
+        Restaurant spiedRestaurant = Mockito.spy(restaurant);
+        Mockito.when(spiedRestaurant.getCurrentTime()).thenReturn(LocalTime.parse("15:00:00"));
         //act:
-        boolean returnValue = restaurant.isRestaurantOpen();
-
+        boolean returnValue = spiedRestaurant.isRestaurantOpen();
         //assert:
         assertTrue(returnValue);
 
-    }
+        //-------------------------------------------X------------------------------------------------
 
-    @Test
+        //ARRANGE PART 2: current and opening times in same day, closing time in next day
+        openingTime = LocalTime.parse("20:00:00");
+        closingTime = LocalTime.parse("06:00:00");
+        restaurant = new Restaurant("some_name", "some_location", openingTime, closingTime);
+        spiedRestaurant = Mockito.spy(restaurant);
+        Mockito.when(spiedRestaurant.getCurrentTime()).thenReturn(LocalTime.parse("22:00:00"));
+        //act:
+        returnValue = spiedRestaurant.isRestaurantOpen();
+        //assert:
+        assertTrue(returnValue);
+
+        //-------------------------------------------X--------------------------------------------------
+
+        //ARRANGE PATH 3: current and closing time in next day, opening time in previous day:
+        openingTime = LocalTime.parse("22:00:00");
+        closingTime = LocalTime.parse("06:00:00");
+        restaurant = new Restaurant("some_name", "some_location", openingTime, closingTime);
+        spiedRestaurant = Mockito.spy(restaurant);
+        Mockito.when(spiedRestaurant.getCurrentTime()).thenReturn(LocalTime.parse("02:00:00"));
+        //act:
+        returnValue = spiedRestaurant.isRestaurantOpen();
+        //assert:
+        assertTrue(returnValue);
+    }
+        @Test
     public void is_restaurant_open_should_return_false_if_time_is_outside_opening_and_closing_time(){
         //WRITE UNIT TEST CASE HERE
         //arrange:
@@ -105,4 +132,7 @@ class RestaurantTest {
                 ()->restaurant.removeFromMenu("French fries"));
     }
     //<<<<<<<<<<<<<<<<<<<<<<<MENU>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+
+
 }

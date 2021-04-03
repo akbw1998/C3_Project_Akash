@@ -1,5 +1,4 @@
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +28,9 @@ public class Restaurant {
                 return true;
         }
         else if(currentTime.isBefore(closingTime) && (currentTime.compareTo(openingTime)>=0))  // when all times are in same day, and current time is between opening and closing (or equal to opening):
-            return true;
+        {
+            System.out.println(currentTime);
+            return true;}
 
         return false;
     }
