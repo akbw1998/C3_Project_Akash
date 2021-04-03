@@ -133,6 +133,56 @@ class RestaurantTest {
     }
     //<<<<<<<<<<<<<<<<<<<<<<<MENU>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
+//<<<<<<<<<<<<<<<<<<<<DISPLAY SELECTED ITEM PRICES>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
+    /* REQUIREMENTS:
+    In the stub code, you need to add another method that
+     returns the order value,
+     given the name of the items in <String> format.
+      only purpose of this feature should be to display the order total
+      Could be <methodName>(<itemName1>,<itemName2>,<itemName3>,...)
+      Could be <methodName>(<list of itemNames>)
+      The name of the item returned when the user selects the item is always in the menu
+      You may add any attribute if necessary, you may add more than one method too, if necessary.
+      You would have to figure out where to place these attributes, methods and test methods. You should also decide on their visibility.
 
+     */
+
+    @Test
+    public void selecting_non_zero_items_from_menu_should_display_total_price_of_selected_items(){
+
+        //arrange:
+        restaurant = new Restaurant("some restaurant",null,null,null);
+
+        restaurant.addToMenu("Sweet corn soup",119);
+        restaurant.addToMenu("Vegetable lasagne", 269);
+        restaurant.addToMenu("Tomato Soup",150);
+        restaurant.addToMenu("Veggie Delight Pizza",350);
+        restaurant.addToMenu("Pepperoni Pizza", 450);
+
+        ArrayList<String> selectedItems = new ArrayList<String>();
+        selectedItems.add("Sweet corn soup");
+        selectedItems.add("Pepperoni Pizza");
+
+        //act:
+        int totalOrderValue = restaurant.displayOrderValue(selectedItems);
+
+        //assert:
+        assertEquals(totalOrderValue,569);
+    }
+
+    @Test
+    public void selecting_zero_items_from_menu_should_display_total_price_equal_to_zero(){
+
+        //arrange:
+        restaurant = new Restaurant("some restaurant",null,null,null);
+
+        ArrayList <String> selectedItems = new ArrayList<String>();
+
+        //act:
+        int totalOrderValue = restaurant.displayOrderValue(selectedItems);
+
+        //assert:
+        assertEquals(totalOrderValue,0);
+    }
 }
